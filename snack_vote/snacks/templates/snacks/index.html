@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>우리반 간식 투표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lime: #C8FF00;
+    --black: #0A0A0A;
+    --white: #FAFAFA;
+    --gray: #E0E0E0;
+    --agree: #C8FF00;
+    --disagree: #FF3B3B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--lime);
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--black);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    mix-blend-mode: multiply;
+  }
+
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding-top: 4px;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 120px 40px 60px;
+    overflow: hidden;
+    border-bottom: 2px solid var(--black);
+  }
+
+  .hero-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+
+  .hero-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    border-top: 1.5px solid var(--black);
+    padding: 8px 0;
+  }
+
+  .hero-num {
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 20px;
+    opacity: 0.5;
+  }
+
+  .hero-word {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 12vw, 140px);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    min-height: calc(100vh - 400px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 2px solid var(--black);
+    padding: 48px 40px;
+    background: var(--lime);
+    position: sticky;
+    top: 0;
+    height: fit-content;
+  }
+
+  .sidebar h2 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 32px;
+    opacity: 0.5;
+  }
+
+  .form-field {
+    margin-bottom: 20px;
+  }
+
+  .form-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--black);
+    background: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    transition: background 0.15s;
+  }
+
+  .form-input:focus {
+    background: var(--lime);
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--black);
+    color: var(--lime);
+    border: 2px solid var(--black);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .submit-btn:hover {
+    background: var(--lime);
+    color: var(--black);
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 48px 48px;
+    background: var(--white);
+  }
+
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--black);
+  }
+
+  .content-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 0.05em;
+  }
+
+  .count-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    background: var(--black);
+    color: var(--lime);
+    padding: 6px 14px;
+  }
+
+  /* SNACK CARD */
+  .snack-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .snack-card {
+    border: 2px solid var(--black);
+    border-bottom: none;
+    padding: 28px 32px;
+    background: var(--white);
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .snack-card:last-child {
+    border-bottom: 2px solid var(--black);
+  }
+
+  .snack-card:hover {
+    background: #F5F5F5;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .snack-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .snack-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+
+  .snack-info {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.45;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .snack-link {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--black);
+    text-decoration: none;
+    border-bottom: 2px solid var(--black);
+    padding-bottom: 2px;
+    transition: opacity 0.15s;
+  }
+
+  .snack-link:hover { opacity: 0.5; }
+
+  /* VOTE BAR */
+  .vote-bar-wrap {
+    margin-bottom: 16px;
+  }
+
+  .vote-bar-track {
+    height: 6px;
+    background: var(--gray);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vote-bar-fill {
+    height: 100%;
+    background: var(--black);
+    transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .vote-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* VOTE BUTTONS */
+  .vote-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .vote-btn {
+    flex: 1;
+    padding: 14px 12px;
+    border: 2px solid var(--black);
+    background: transparent;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vote-btn:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .vote-btn.active-agree {
+    background: var(--lime);
+    border-color: var(--black);
+    color: var(--black);
+  }
+
+  .vote-btn.active-disagree {
+    background: var(--disagree);
+    border-color: var(--disagree);
+    color: var(--white);
+  }
+
+  .vote-btn .icon { font-size: 16px; }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 80px 40px;
+    opacity: 0.3;
+  }
+
+  .empty-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .empty p {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--black);
+    color: var(--lime);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    padding: 16px 28px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .sidebar { position: static; border-right: none; border-bottom: 2px solid var(--black); }
+    nav { padding: 16px 20px; }
+    .hero { padding: 100px 20px 40px; }
+    .content { padding: 32px 20px; }
+    .sidebar { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">우리반<br>간식<br>투표</div>
+  <div class="nav-tag">Class Snack<br>Vote System</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">카테고리</div>
+  <div class="hero-row">
+    <span class="hero-num">01</span>
+    <span class="hero-word">SNACK</span>
+  </div>
+  <div class="hero-row">
+    <span class="hero-num">02</span>
+    <span class="hero-word">VOTE</span>
+  </div>
+  <div class="hero-row">
+    <span class="hero-num">03</span>
+    <span class="hero-word">DECIDE</span>
+  </div>
+</div>
+
+<main>
+  <aside class="sidebar">
+    <h2>간식 추가하기</h2>
+    <form method="POST" action="{% url 'add_snack' %}">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-field">
+        <label>{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button type="submit" class="submit-btn">추가하기 →</button>
+    </form>
+  </aside>
+
+  <div class="content">
+    <div class="content-header">
+      <h2>간식 목록</h2>
+      <span class="count-badge">{{ snacks.count }}개</span>
+    </div>
+
+    <div class="snack-list" id="snack-list">
+      {% if snacks %}
+        {% for snack in snacks %}
+        <div class="snack-card" id="card-{{ snack.id }}">
+          <div class="card-top">
+            <div class="snack-meta">
+              <span class="snack-name">{{ snack.name }}</span>
+              <span class="snack-info">by {{ snack.submitted_by }} · {{ snack.created_at|date:"m/d" }}</span>
+            </div>
+            <a href="{{ snack.url }}" target="_blank" class="snack-link">링크 보기 ↗</a>
+          </div>
+
+          <div class="vote-bar-wrap">
+            <div class="vote-bar-track">
+              <div class="vote-bar-fill" id="bar-{{ snack.id }}" style="width: {{ snack.agree_percent }}%"></div>
+            </div>
+            <div class="vote-stats">
+              <span id="agree-stat-{{ snack.id }}">👍 동의 {{ snack.agree_count }}명</span>
+              <span id="disagree-stat-{{ snack.id }}">비동의 {{ snack.disagree_count }}명 👎</span>
+            </div>
+          </div>
+
+          <div class="vote-btns">
+            <button class="vote-btn {% if snack.user_vote == 'agree' %}active-agree{% endif %}"
+                    onclick="castVote({{ snack.id }}, 'agree', this)"
+                    id="agree-btn-{{ snack.id }}">
+              <span class="icon">✓</span> 먹자
+            </button>
+            <button class="vote-btn {% if snack.user_vote == 'disagree' %}active-disagree{% endif %}"
+                    onclick="castVote({{ snack.id }}, 'disagree', this)"
+                    id="disagree-btn-{{ snack.id }}">
+              <span class="icon">✕</span> 별로
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty">
+          <span class="empty-big">🍿</span>
+          <p>아직 등록된 간식이 없어요<br>첫 번째 간식을 추가해보세요!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  async function castVote(id, type, btn) {
+    const res = await fetch(`/vote/${id}/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': CSRF },
+      body: `vote_type=${type}`
+    });
+    const data = await res.json();
+
+    document.getElementById(`agree-stat-${id}`).textContent = `👍 동의 ${data.agree}명`;
+    document.getElementById(`disagree-stat-${id}`).textContent = `비동의 ${data.disagree}명 👎`;
+    document.getElementById(`bar-${id}`).style.width = data.agree_percent + '%';
+
+    const agreeBtn = document.getElementById(`agree-btn-${id}`);
+    const disagreeBtn = document.getElementById(`disagree-btn-${id}`);
+    agreeBtn.className = 'vote-btn';
+    disagreeBtn.className = 'vote-btn';
+
+    if (data.user_vote === 'agree') {
+      agreeBtn.classList.add('active-agree');
+      showToast('먹자! 👍');
+    } else if (data.user_vote === 'disagree') {
+      disagreeBtn.classList.add('active-disagree');
+      showToast('별로다 👎');
+    } else {
+      showToast('투표 취소됨');
+    }
+  }
+</script>
+
+</body>
+</html>
